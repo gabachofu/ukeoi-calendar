@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>請負仕事カレンダー</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
+  background:#f4f6f9;
+  color:#222;
+}
+
+.app{
+  max-width:700px;
+  margin:auto;
+  min-height:100vh;
+  background:#fff;
+}
+
+header{
+  height:64px;
+  background:#13213d;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  font-size:21px;
+  font-weight:700;
+}
+
+.header-plus{
+  position:absolute;
+  right:20px;
+  font-size:34px;
+  font-weight:300;
+  cursor:pointer;
+}
+
+.month-area{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:22px 25px 16px;
+}
+
+.month-area h2{
+  margin:0;
+  font-size:25px;
+}
+
+.month-arrow{
+  border:none;
+  background:none;
+  font-size:34px;
+  cursor:pointer;
+  padding:0 15px;
+}
+
+.today-button{
+  display:block;
+  margin:0 auto 15px;
+  border:1px solid #ccd3dd;
+  background:#fff;
+  border-radius:20px;
+  padding:7px 18px;
+  cursor:pointer;
+}
+
+.calendar{
+  border-top:1px solid #ddd;
+}
+
+.day{
+  display:flex;
+  min-height:64px;
+  border-bottom:1px solid #e4e4e4;
+}
+
+.date{
+  width:82px;
+  flex-shrink:0;
+  padding:10px 8px;
+  border-right:1px solid #e4e4e4;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.date-number{
+  font-size:21px;
+  font-weight:600;
+}
+
+.week{
+  font-size:13px;
+}
+
+.sunday{
+  color:#e53935;
+}
+
+.saturday{
+  color:#1976d2;
+}
+
+.today{
+  background:#fff9dd;
+}
+
+.schedule-area{
+  flex:1;
+  padding:5px 7px;
+  min-width:0;
+}
+
+.schedule-item{
+  padding:8px 10px;
+  margin:2px 0;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+  line-height:1.45;
+  border-left:5px solid #1976d2;
+  background:#edf5ff;
+}
+
+.schedule-title{
+  font-weight:700;
+  font-size:15px;
+}
+
+.schedule-time{
+  color:#555;
+  margin-top:2px;
+}
+
+.add-button{
+  display:block;
+  width:calc(100% - 30px);
+  margin:18px auto;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  background:#13213d;
+  color:#fff;
+  font-size:18px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.summary{
+  margin:0 15px 25px;
+  border:1px solid #dde2e8;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  padding:13px 16px;
+  border-bottom:1px solid #e8e8e8;
+}
+
+.summary-row:last-child{
+  border-bottom:none;
+}
+
+.summary-label{
+  color:#555;
+}
+
+.summary-value{
+  font-weight:700;
+}
+
+/* 入力画面 */
+
+.form-page{
+  display:none;
+  min-height:100vh;
+  background:#f4f6f9;
+}
+
+.form-header{
+  height:64px;
+  background:#13213d;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  font-size:21px;
+  font-weight:700;
+}
+
+.back-button{
+  position:absolute;
+  left:15px;
+  border:none;
+  background:none;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.form-content{
+  padding:15px;
+}
+
+.form-section{
+  background:#fff;
+  border-radius:12px;
+  padding:17px;
+  margin-bottom:13px;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+
+label{
+  display:block;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+input, textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #cfd5dd;
+  border-radius:8px;
+  font-size:16px;
+  background:#fff;
+}
+
+textarea{
+  resize:vertical;
+}
+
+.date-range,
+.time-range{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.date-range input,
+.time-range input{
+  flex:1;
+  min-width:0;
+}
+
+.range-mark{
+  font-weight:bold;
+}
+
+.segment{
+  display:flex;
+}
+
+.segment button{
+  flex:1;
+  padding:12px 5px;
+  background:#fff;
+  border:1px solid #bcc4ce;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.segment button:first-child{
+  border-radius:8px 0 0 8px;
+}
+
+.segment button:last-child{
+  border-radius:0 8px 8px 0;
+}
+
+.segment button.active{
+  background:#eaf3ff;
+  color:#1266d6;
+  border-color:#1266d6;
+  font-weight:700;
+}
+
+.color-options{
+  display:flex;
+  gap:17px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.color-dot{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  cursor:pointer;
+  border:3px solid transparent;
+}
+
+.color-dot.selected{
+  outline:3px solid #222;
+  outline-offset:2px;
+}
+
+.blue{background:#2f80ed;}
+.green{background:#56b957;}
+.orange{background:#ff8a00;}
+.purple{background:#8d59c7;}
+.gray{background:#75808a;}
+
+.form-buttons{
+  padding:0 15px 30px;
+}
+
+.save-button{
+  width:100%;
+  border:none;
+  border-radius:10px;
+  padding:15px;
+  font-size:18px;
+  color:#fff;
+  background:#1874e8;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.delete-button{
+  display:none;
+  width:100%;
+  margin-top:10px;
+  border:1px solid #e54b4b;
+  border-radius:10px;
+  padding:14px;
+  font-size:17px;
+  color:#e54b4b;
+  background:#fff;
+  cursor:pointer;
+}
+
+.cancel-button{
+  width:100%;
+  margin-top:10px;
+  border:none;
+  padding:13px;
+  font-size:16px;
+  color:#666;
+  background:transparent;
+  cursor:pointer;
+}
+
+@media(max-width:500px){
+  .app{
+    width:100%;
+  }
+
+  .date{
+    width:68px;
+  }
+
+  .month-area{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .date-range{
+    flex-wrap:wrap;
+  }
+
+  .date-range input{
+    min-width:130px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- カレンダー画面 -->
+  <div id="calendarPage">
+
+    <header>
+      請負仕事カレンダー
+      <div class="header-plus" onclick="openNewForm()">＋</div>
+    </header>
+
+    <div class="month-area">
+      <button class="month-arrow" onclick="changeMonth(-1)">‹</button>
+      <h2 id="monthTitle"></h2>
+      <button class="month-arrow" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <button class="today-button" onclick="goToday()">今日</button>
+
+    <div class="calendar" id="calendar"></div>
+
+    <button class="add-button" onclick="openNewForm()">
+      ＋ 予定を追加
+    </button>
+
+    <div class="summary">
+      <div class="summary-row">
+        <span class="summary-label">今月の予定</span>
+        <span class="summary-value" id="count">0件</span>
+      </div>
+
+      <div class="summary-row">
+        <span class="summary-label">予定売上</span>
+        <span class="summary-value" id="total">¥0</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- 入力画面 -->
+  <div class="form-page" id="formPage">
+
+    <div class="form-header">
+      <button class="back-button" onclick="closeForm()">‹ 戻る</button>
+      <span id="formTitle">予定の入力</span>
+    </div>
+
+    <div class="form-content">
+
+      <div class="form-section">
+        <label>作業日</label>
+
+        <div class="date-range">
+          <input type="date" id="startDate">
+          <span class="range-mark">～</span>
+          <input type="date" id="endDate">
+        </div>
+      </div>
+
+
+      <div class="form-section">
+        <label>時間帯</label>
+
+        <div class="segment">
+          <button type="button"
+            id="amButton"
+            onclick="selectTimeType('AM')">AM</button>
+
+          <button type="button"
+            id="pmButton"
+            onclick="selectTimeType('PM')">PM</button>
+
+          <button type="button"
+            id="allButton"
+            onclick="selectTimeType('終日')">終日</button>
+        </div>
+      </div>
+
+
+      <div class="form-section" id="timeSection">
+        <label>時間</label>
+
+        <div class="time-range">
+          <input type="time" id="startTime">
+          <span class="range-mark">～</span>
+          <input type="time" id="endTime">
+        </div>
+      </div>
+
+
+      <div class="form-section">
+        <label>作業場所</label>
+        <input
+          type="text"
+          id="place"
+          placeholder="例：○○農場">
+      </div>
+
+
+      <div class="form-section">
+        <label>作業内容</label>
+        <input
+          type="text"
+          id="work"
+          placeholder="例：鶏舎水洗">
+      </div>
+
+
+      <div class="form-section">
+        <label>予定金額</label>
+        <input
+          type="number"
+          id="price"
+          placeholder="例：35000">
+      </div>
+
+
+      <div class="form-section">
+        <label>備考</label>
+        <textarea
+          id="memo"
+          rows="3"
+          placeholder="例：2号鶏舎"></textarea>
+      </div>
+
+
+      <div class="form-section">
+        <label>色分け</label>
+
+        <div class="color-options">
+          <div class="color-dot blue selected"
+               data-color="blue"
+               onclick="selectColor('blue')"></div>
+
+          <div class="color-dot green"
+               data-color="green"
+               onclick="selectColor('green')"></div>
+
+          <div class="color-dot orange"
+               data-color="orange"
+               onclick="selectColor('orange')"></div>
+
+          <div class="color-dot purple"
+               data-color="purple"
+               onclick="selectColor('purple')"></div>
+
+          <div class="color-dot gray"
+               data-color="gray"
+               onclick="selectColor('gray')"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-buttons">
+      <button class="save-button" onclick="saveSchedule()">
+        登録する
+      </button>
+
+      <button class="delete-button"
+              id="deleteButton"
+              onclick="deleteSchedule()">
+        この予定を削除
+      </button>
+
+      <button class="cancel-button" onclick="closeForm()">
+        キャンセル
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let currentDate = new Date();
+
+let schedules =
+  JSON.parse(localStorage.getItem("schedules_v2") || "[]");
+
+let selectedTimeType = "AM";
+let selectedColor = "blue";
+let editingId = null;
+
+
+const colors = {
+  blue:{
+    background:"#edf5ff",
+    border:"#2f80ed"
+  },
+  green:{
+    background:"#eef9ed",
+    border:"#56b957"
+  },
+  orange:{
+    background:"#fff4e5",
+    border:"#ff8a00"
+  },
+  purple:{
+    background:"#f5edff",
+    border:"#8d59c7"
+  },
+  gray:{
+    background:"#f0f2f4",
+    border:"#75808a"
+  }
+};
+
+
+function formatLocalDate(date){
+
+  const y = date.getFullYear();
+  const m = String(date.getMonth()+1).padStart(2,"0");
+  const d = String(date.getDate()).padStart(2,"0");
+
+  return `${y}-${m}-${d}`;
+}
+
+
+function renderCalendar(){
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  document.getElementById("monthTitle").textContent =
+    `${year}年 ${month+1}月`;
+
+  const calendar =
+    document.getElementById("calendar");
+
+  calendar.innerHTML = "";
+
+  const lastDay =
+    new Date(year,month+1,0).getDate();
+
+  const todayString =
+    formatLocalDate(new Date());
+
+  let count = 0;
+  let total = 0;
+
+
+  for(let day=1;day<=lastDay;day++){
+
+    const dateObj =
+      new Date(year,month,day);
+
+    const dateString =
+      formatLocalDate(dateObj);
+
+    const weekIndex =
+      dateObj.getDay();
+
+    const weekNames =
+      ["日","月","火","水","木","金","土"];
+
+    const row =
+      document.createElement("div");
+
+    row.className = "day";
+
+    if(dateString === todayString){
+      row.classList.add("today");
+    }
+
+
+    const dateBox =
+      document.createElement("div");
+
+    dateBox.className = "date";
+
+    if(weekIndex === 0){
+      dateBox.classList.add("sunday");
+    }
+
+    if(weekIndex === 6){
+      dateBox.classList.add("saturday");
+    }
+
+    dateBox.innerHTML =
+      `<span class="date-number">${day}</span>
+       <span class="week">${weekNames[weekIndex]}</span>`;
+
+
+    const scheduleArea =
+      document.createElement("div");
+
+    scheduleArea.className =
+      "schedule-area";
+
+
+    const daySchedules =
+      schedules.filter(schedule =>
+        dateString >= schedule.startDate &&
+        dateString <= schedule.endDate
+      );
+
+
+    daySchedules.forEach(schedule => {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "schedule-item";
+
+      const color =
+        colors[schedule.color] || colors.blue;
+
+      item.style.background =
+        color.background;
+
+      item.style.borderLeftColor =
+        color.border;
+
+
+      let timeText =
+        schedule.timeType;
+
+      if(schedule.timeType !== "終日"){
+
+        if(schedule.startTime){
+          timeText += " " + schedule.startTime;
+        }
+
+        if(schedule.endTime){
+          timeText += " ～ " + schedule.endTime;
+        }
+      }
+
+
+      item.innerHTML =
+        `<div class="schedule-title">
+           ${escapeHtml(schedule.place || "予定")}
+           ${schedule.work
+             ? "　" + escapeHtml(schedule.work)
+             : ""}
+         </div>
+         <div class="schedule-time">
+           ${escapeHtml(timeText)}
+         </div>`;
+
+
+      item.onclick = () =>
+        openEditForm(schedule.id);
+
+      scheduleArea.appendChild(item);
+
+      count++;
+    });
+
+
+    row.appendChild(dateBox);
+    row.appendChild(scheduleArea);
+
+    calendar.appendChild(row);
+  }
+
+
+  const monthlySchedules =
+    schedules.filter(schedule => {
+
+      const first =
+        `${year}-${String(month+1).padStart(2,"0")}-01`;
+
+      const last =
+        `${year}-${String(month+1).padStart(2,"0")}-${String(lastDay).padStart(2,"0")}`;
+
+      return (
+        schedule.startDate <= last &&
+        schedule.endDate >= first
+      );
+    });
+
+
+  total =
+    monthlySchedules.reduce(
+      (sum,schedule) =>
+        sum + Number(schedule.price || 0),
+      0
+    );
+
+
+  document.getElementById("count").textContent =
+    monthlySchedules.length + "件";
+
+  document.getElementById("total").textContent =
+    "¥" + total.toLocaleString();
+}
+
+
+function changeMonth(amount){
+
+  currentDate =
+    new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth()+amount,
+      1
+    );
+
+  renderCalendar();
+}
+
+
+function goToday(){
+
+  currentDate = new Date();
+  renderCalendar();
+}
+
+
+function openNewForm(){
+
+  editingId = null;
+
+  document.getElementById("formTitle").textContent =
+    "予定の入力";
+
+  document.getElementById("deleteButton").style.display =
+    "none";
+
+  clearForm();
+
+  const today =
+    formatLocalDate(new Date());
+
+  document.getElementById("startDate").value =
+    today;
+
+  document.getElementById("endDate").value =
+    today;
+
+  showForm();
+}
+
+
+function openEditForm(id){
+
+  const schedule =
+    schedules.find(s => s.id === id);
+
+  if(!schedule) return;
+
+  editingId = id;
+
+  document.getElementById("formTitle").textContent =
+    "予定の編集";
+
+  document.getElementById("startDate").value =
+    schedule.startDate;
+
+  document.getElementById("endDate").value =
+    schedule.endDate;
+
+  document.getElementById("startTime").value =
+    schedule.startTime || "";
+
+  document.getElementById("endTime").value =
+    schedule.endTime || "";
+
+  document.getElementById("place").value =
+    schedule.place || "";
+
+  document.getElementById("work").value =
+    schedule.work || "";
+
+  document.getElementById("price").value =
+    schedule.price || "";
+
+  document.getElementById("memo").value =
+    schedule.memo || "";
+
+  selectTimeType(
+    schedule.timeType || "AM"
+  );
+
+  selectColor(
+    schedule.color || "blue"
+  );
+
+  document.getElementById("deleteButton").style.display =
+    "block";
+
+  showForm();
+}
+
+
+function showForm(){
+
+  document.getElementById("calendarPage").style.display =
+    "none";
+
+  document.getElementById("formPage").style.display =
+    "block";
+
+  window.scrollTo(0,0);
+}
+
+
+function closeForm(){
+
+  document.getElementById("formPage").style.display =
+    "none";
+
+  document.getElementById("calendarPage").style.display =
+    "block";
+
+  editingId = null;
+
+  window.scrollTo(0,0);
+}
+
+
+function clearForm(){
+
+  document.getElementById("startDate").value = "";
+  document.getElementById("endDate").value = "";
+  document.getElementById("startTime").value = "";
+  document.getElementById("endTime").value = "";
+  document.getElementById("place").value = "";
+  document.getElementById("work").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("memo").value = "";
+
+  selectTimeType("AM");
+  selectColor("blue");
+}
+
+
+function selectTimeType(type){
+
+  selectedTimeType = type;
+
+  document
+    .querySelectorAll(".segment button")
+    .forEach(button =>
+      button.classList.remove("active")
+    );
+
+  if(type === "AM"){
+    document.getElementById("amButton")
+      .classList.add("active");
+  }
+
+  if(type === "PM"){
+    document.getElementById("pmButton")
+      .classList.add("active");
+  }
+
+  if(type === "終日"){
+    document.getElementById("allButton")
+      .classList.add("active");
+  }
+
+
+  document.getElementById("timeSection").style.display =
+    type === "終日" ? "none" : "block";
+}
+
+
+function selectColor(color){
+
+  selectedColor = color;
+
+  document
+    .querySelectorAll(".color-dot")
+    .forEach(dot =>
+      dot.classList.remove("selected")
+    );
+
+  const selected =
+    document.querySelector(
+      `[data-color="${color}"]`
+    );
+
+  if(selected){
+    selected.classList.add("selected");
+  }
+}
+
+
+function saveSchedule(){
+
+  const startDate =
+    document.getElementById("startDate").value;
+
+  let endDate =
+    document.getElementById("endDate").value;
+
+  const place =
+    document.getElementById("place").value.trim();
+
+  const work =
+    document.getElementById("work").value.trim();
+
+
+  if(!startDate){
+    alert("作業日を入力してください。");
+    return;
+  }
+
+  if(!endDate){
+    endDate = startDate;
+  }
+
+  if(endDate < startDate){
+    alert("終了日は開始日以降にしてください。");
+    return;
+  }
+
+  if(!place){
+    alert("作業場所を入力してください。");
+    return;
+  }
+
+
+  const data = {
+
+    id:
+      editingId ||
+      Date.now().toString(),
+
+    startDate:startDate,
+    endDate:endDate,
+
+    timeType:selectedTimeType,
+
+    startTime:
+      selectedTimeType === "終日"
+      ? ""
+      : document.getElementById("startTime").value,
+
+    endTime:
+      selectedTimeType === "終日"
+      ? ""
+      : document.getElementById("endTime").value,
+
+    place:place,
+    work:work,
+
+    price:
+      document.getElementById("price").value,
+
+    memo:
+      document.getElementById("memo").value.trim(),
+
+    color:selectedColor
+  };
+
+
+  if(editingId){
+
+    const index =
+      schedules.findIndex(
+        schedule =>
+          schedule.id === editingId
+      );
+
+    if(index !== -1){
+      schedules[index] = data;
+    }
+
+  }else{
+
+    schedules.push(data);
+  }
+
+
+  localStorage.setItem(
+    "schedules_v2",
+    JSON.stringify(schedules)
+  );
+
+
+  currentDate =
+    new Date(
+      Number(startDate.substring(0,4)),
+      Number(startDate.substring(5,7))-1,
+      1
+    );
+
+
+  closeForm();
+  renderCalendar();
+}
+
+
+function deleteSchedule(){
+
+  if(!editingId) return;
+
+  const ok =
+    confirm("この予定を削除しますか？");
+
+  if(!ok) return;
+
+
+  schedules =
+    schedules.filter(
+      schedule =>
+        schedule.id !== editingId
+    );
+
+
+  localStorage.setItem(
+    "schedules_v2",
+    JSON.stringify(schedules)
+  );
+
+
+  closeForm();
+  renderCalendar();
+}
+
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+
+selectTimeType("AM");
+renderCalendar();
+
+</script>
+
+</body>
+</html>
