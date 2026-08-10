@@ -585,6 +585,7 @@ async function login() {
 
   document.getElementById("loginScreen").style.display = "none";
   document.querySelector(".app").style.display = "block";
+  await loadSchedules();
 }
 
 document.getElementById("loginButton").addEventListener("click", login);
@@ -594,6 +595,7 @@ async function checkLogin() {
   if (session) {
     document.getElementById("loginScreen").style.display = "none";
     document.querySelector(".app").style.display = "block";
+    await loadSchedules();
   } else {
     document.getElementById("loginScreen").style.display = "block";
     document.querySelector(".app").style.display = "none";
@@ -601,10 +603,37 @@ async function checkLogin() {
 }
 
 checkLogin();
+async function loadSchedules() {
+
+  const { data, error } = await supabaseClient
+    .from("jobs")
+    .select("*")
+    .order("work_date", { ascending: true });
+
+  if (error) {
+    console.error("予定の読み込みエラー:", error);
+    return;
+  }
+
+  schedules = data.map(job => ({
+    id: job.id,
+    startDate: job.work_date,
+    endDate: job.end_date || job.work_date,
+    timeType: job.time_type || "終日",
+    startTime: job.start_time || "",
+    endTime: job.end_time || "",
+    place: job.location || "",
+    work: job.title || "",
+    price: job.amount || "",
+    memo: job.memo || "",
+    color: job.color || "blue"
+  }));
+
+  renderCalendar();
+}
 let currentDate = new Date();
 
-let schedules =
-  JSON.parse(localStorage.getItem("schedules_v2") || "[]");
+let schedules = [];
 
 let selectedTimeType = "AM";
 let selectedColor = "blue";
@@ -1007,7 +1036,7 @@ function selectColor(color){
 }
 
 
-function saveSchedule(){
+async function saveSchedule(){
 
   const startDate =
     document.getElementById("startDate").value;
@@ -1076,28 +1105,47 @@ function saveSchedule(){
   };
 
 
-  if(editingId){
+ const { data: { user } } = await supabaseClient.auth.getUser();
 
-    const index =
-      schedules.findIndex(
-        schedule =>
-          schedule.id === editingId
-      );
+const jobData = {
+  user_id: user.id,
+  work_date: data.startDate,
+  end_date: data.endDate,
+  time_type: data.timeType,
+  start_time: data.startTime || null,
+  end_time: data.endTime || null,
+  location: data.place,
+  title: data.work,
+  amount: data.price || null,
+  memo: data.memo,
+  color: data.color
+};
 
-    if(index !== -1){
-      schedules[index] = data;
-    }
+if (editingId) {
 
-  }else{
+  const { error } = await supabaseClient
+    .from("jobs")
+    .update(jobData)
+    .eq("id", editingId);
 
-    schedules.push(data);
+  if (error) {
+    alert("予定の更新に失敗しました：" + error.message);
+    return;
   }
 
+} else {
 
-  localStorage.setItem(
-    "schedules_v2",
-    JSON.stringify(schedules)
-  );
+  const { error } = await supabaseClient
+    .from("jobs")
+    .insert(jobData);
+
+  if (error) {
+    alert("予定の登録に失敗しました：" + error.message);
+    return;
+  }
+}
+
+await loadSchedules();
 
 
   currentDate =
@@ -1113,7 +1161,7 @@ function saveSchedule(){
 }
 
 
-function deleteSchedule(){
+async function deleteSchedule(){
 
   if(!editingId) return;
 
@@ -1123,17 +1171,17 @@ function deleteSchedule(){
   if(!ok) return;
 
 
-  schedules =
-    schedules.filter(
-      schedule =>
-        schedule.id !== editingId
-    );
+ const { error } = await supabaseClient
+  .from("jobs")
+  .delete()
+  .eq("id", editingId);
 
+if (error) {
+  alert("予定の削除に失敗しました：" + error.message);
+  return;
+}
 
-  localStorage.setItem(
-    "schedules_v2",
-    JSON.stringify(schedules)
-  );
+await loadSchedules();
 
 
   closeForm();
