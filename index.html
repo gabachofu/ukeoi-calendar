@@ -461,6 +461,10 @@ body{
     font-size:28px;
   }
 }
+  .other-month{
+  opacity:0.45;
+  background:#f7f8fa;
+}
 </style>
 </head>
 
@@ -782,17 +786,22 @@ function renderCalendar(){
   let total = 0;
 
 
-  for(let day=1;day<=lastDay;day++){
+  const startDisplayDate = new Date(year, month, -6);
+const endDisplayDate = new Date(year, month + 1, 7);
 
-    const dateObj =
-      new Date(year,month,day);
+for(
+  let dateObj = new Date(startDisplayDate);
+  dateObj <= endDisplayDate;
+  dateObj.setDate(dateObj.getDate() + 1)
+){
 
-    const dateString =
-      formatLocalDate(dateObj);
+   const displayDate = new Date(dateObj);
 
-    const weekIndex =
-      dateObj.getDay();
+   const dateString =
+  formatLocalDate(displayDate);
 
+   const weekIndex =
+  displayDate.getDay();
     const weekNames =
       ["日","月","火","水","木","金","土"];
 
@@ -800,7 +809,9 @@ function renderCalendar(){
       document.createElement("div");
 
     row.className = "day";
-
+if(displayDate.getMonth() !== month){
+  row.classList.add("other-month");
+}
     if(dateString === todayString){
       row.classList.add("today");
     }
