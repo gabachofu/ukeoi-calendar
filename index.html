@@ -1087,7 +1087,9 @@ function openNewForm(){
 
   showForm();
 }
-
+document.getElementById("startDate").addEventListener("change", function(){
+  document.getElementById("endDate").value = this.value;
+});
 
 function openEditForm(id){
 
