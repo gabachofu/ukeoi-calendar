@@ -550,6 +550,40 @@ header{
 .month-arrow{
   line-height:1;
 }
+  /* 作業場所・作業内容の候補一覧 */
+.suggest-wrapper{
+  position:relative;
+}
+
+.suggestions{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:8px;
+  max-height:220px;
+  overflow-y:auto;
+  z-index:1000;
+  box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.suggestion-item{
+  padding:12px 14px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.suggestion-item:last-child{
+  border-bottom:none;
+}
+
+.suggestion-item:active{
+  background:#f3f4f6;
+}
 </style>
 </head>
 
@@ -653,23 +687,27 @@ header{
 
       <div class="form-section">
         <label>作業場所</label>
-       <input
-  type="text"
-  id="place"
-  list="placeList"
-  placeholder="例：○○農場">
-<datalist id="placeList"></datalist>
+      <div class="suggest-wrapper">
+  <input
+    type="text"
+    id="place"
+    placeholder="例：○○農場"
+    autocomplete="off">
+  <div id="placeSuggestions" class="suggestions"></div>
+</div>
       </div>
 
 
       <div class="form-section">
         <label>作業内容</label>
-        <input
-  type="text"
-  id="work"
-  list="workList"
-  placeholder="例：鶏舎水洗">
-<datalist id="workList"></datalist>
+       <div class="suggest-wrapper">
+  <input
+    type="text"
+    id="work"
+    placeholder="例：鶏舎水洗"
+    autocomplete="off">
+  <div id="workSuggestions" class="suggestions"></div>
+</div>
       </div>
 
 
@@ -852,35 +890,58 @@ function formatLocalDate(date){
 }
 function updateInputSuggestions(){
 
-  const places = [...new Set(
-    schedules
-      .map(schedule => schedule.place)
-      .filter(value => value && value.trim())
-  )];
+    const places = [...new Set(
+        schedules
+            .map(schedule => schedule.place)
+            .filter(value => value && value.trim())
+    )];
 
-  const works = [...new Set(
-    schedules
-      .map(schedule => schedule.work)
-      .filter(value => value && value.trim())
-  )];
+    const works = [...new Set(
+        schedules
+            .map(schedule => schedule.work)
+            .filter(value => value && value.trim())
+    )];
 
-  const placeList = document.getElementById("placeList");
-  const workList = document.getElementById("workList");
+    setupSuggestions("place", "placeSuggestions", places);
+    setupSuggestions("work", "workSuggestions", works);
+}
 
-  placeList.innerHTML = "";
-  workList.innerHTML = "";
+function setupSuggestions(inputId, suggestionsId, items){
 
-  places.forEach(place => {
-    const option = document.createElement("option");
-    option.value = place;
-    placeList.appendChild(option);
-  });
+    const input = document.getElementById(inputId);
+    const box = document.getElementById(suggestionsId);
 
-  works.forEach(work => {
-    const option = document.createElement("option");
-    option.value = work;
-    workList.appendChild(option);
-  });
+    function showSuggestions(){
+
+        const keyword = input.value.trim().toLowerCase();
+
+        const filtered = items.filter(item =>
+            item.toLowerCase().includes(keyword)
+        );
+
+        box.innerHTML = "";
+
+        filtered.forEach(item => {
+
+            const div = document.createElement("div");
+          div.className = "suggestion-item";
+            div.textContent = item;
+
+            div.addEventListener("click", function(){
+                input.value = item;
+                box.innerHTML = "";
+                box.style.display = "none";
+            });
+
+            box.appendChild(div);
+        });
+
+        box.style.display =
+            filtered.length > 0 ? "block" : "none";
+    }
+
+    input.addEventListener("focus", showSuggestions);
+    input.addEventListener("input", showSuggestions);
 }
 
 function renderCalendar(){
