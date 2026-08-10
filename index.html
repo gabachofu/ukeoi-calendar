@@ -465,9 +465,7 @@ body{
   opacity:0.45;
   background:#f7f8fa;
 }
-  #currentMonthStart{
-  scroll-margin-top:150px;
-}
+
   /* カレンダーをさらにコンパクトに */
 .day{
   min-height:54px;
@@ -487,6 +485,41 @@ body{
 
 .schedule-item{
   font-size:12px;
+}
+  /* ===== 上部固定ヘッダー ===== */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(20,33,61,0.96);
+  font-size:17px;
+  padding:10px 14px;
+}
+
+.month-area{
+  position:sticky;
+  top:48px;
+  z-index:999;
+  background:rgba(255,255,255,0.96);
+  border-bottom:1px solid #e5e7eb;
+  padding:10px 12px 8px;
+}
+
+.month-area h2{
+  font-size:19px;
+}
+
+.month-arrow{
+  font-size:22px;
+}
+
+.today-button{
+  display:none;
+}
+
+#currentMonthStart{
+  scroll-margin-top:105px;
 }
 </style>
 </head>
@@ -515,7 +548,7 @@ body{
       <button class="month-arrow" onclick="changeMonth(1)">›</button>
     </div>
 
-    <button class="today-button" onclick="goToday()">今日</button>
+    
 
     <div class="calendar" id="calendar"></div>
 
