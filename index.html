@@ -653,19 +653,23 @@ header{
 
       <div class="form-section">
         <label>作業場所</label>
-        <input
-          type="text"
-          id="place"
-          placeholder="例：○○農場">
+       <input
+  type="text"
+  id="place"
+  list="placeList"
+  placeholder="例：○○農場">
+<datalist id="placeList"></datalist>
       </div>
 
 
       <div class="form-section">
         <label>作業内容</label>
         <input
-          type="text"
-          id="work"
-          placeholder="例：鶏舎水洗">
+  type="text"
+  id="work"
+  list="workList"
+  placeholder="例：鶏舎水洗">
+<datalist id="workList"></datalist>
       </div>
 
 
@@ -802,7 +806,7 @@ async function loadSchedules() {
     memo: job.memo || "",
     color: job.color || "blue"
   }));
-
+updateInputSuggestions();
   renderCalendar();
 }
 let currentDate = new Date();
@@ -846,7 +850,38 @@ function formatLocalDate(date){
 
   return `${y}-${m}-${d}`;
 }
+function updateInputSuggestions(){
 
+  const places = [...new Set(
+    schedules
+      .map(schedule => schedule.place)
+      .filter(value => value && value.trim())
+  )];
+
+  const works = [...new Set(
+    schedules
+      .map(schedule => schedule.work)
+      .filter(value => value && value.trim())
+  )];
+
+  const placeList = document.getElementById("placeList");
+  const workList = document.getElementById("workList");
+
+  placeList.innerHTML = "";
+  workList.innerHTML = "";
+
+  places.forEach(place => {
+    const option = document.createElement("option");
+    option.value = place;
+    placeList.appendChild(option);
+  });
+
+  works.forEach(work => {
+    const option = document.createElement("option");
+    option.value = work;
+    workList.appendChild(option);
+  });
+}
 
 function renderCalendar(){
 
