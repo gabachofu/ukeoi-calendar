@@ -380,7 +380,13 @@ textarea{
 </head>
 
 <body>
-
+<div id="loginScreen">
+  <h2>請負仕事カレンダー</h2>
+  <input type="email" id="loginEmail" placeholder="メールアドレス">
+  <input type="password" id="loginPassword" placeholder="パスワード">
+  <button id="loginButton">ログイン</button>
+  <p id="loginMessage"></p>
+</div>
 <div class="app">
 
   <!-- カレンダー画面 -->
@@ -560,6 +566,41 @@ textarea{
 const SUPABASE_URL = "https://grnistgihesrarabxzvy.supabase.co/rest/v1/";
 const SUPABASE_KEY = "sb_publishable_0aMtY-UjRgG_quxEP1gjNg_JSFZVM0U";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function login() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const message = document.getElementById("loginMessage");
+
+  message.textContent = "ログイン中...";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = "メールアドレスまたはパスワードが違います";
+    return;
+  }
+
+  document.getElementById("loginScreen").style.display = "none";
+  document.querySelector(".app").style.display = "block";
+}
+
+document.getElementById("loginButton").addEventListener("click", login);
+async function checkLogin() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (session) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.querySelector(".app").style.display = "block";
+  } else {
+    document.getElementById("loginScreen").style.display = "block";
+    document.querySelector(".app").style.display = "none";
+  }
+}
+
+checkLogin();
 let currentDate = new Date();
 
 let schedules =
