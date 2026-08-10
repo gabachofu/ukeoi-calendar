@@ -579,7 +579,7 @@ async function login() {
   });
 
   if (error) {
-    message.textContent = "メールアドレスまたはパスワードが違います";
+    message.textContent = error.message;
     return;
   }
 
