@@ -608,6 +608,57 @@ header{
   color:#6b7280;
   line-height:1.4;
 }
+  .monthly-calendar{
+  padding:8px;
+  background:#fff;
+}
+
+.monthly-week-header,
+.monthly-grid{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+}
+
+.monthly-week-header div{
+  text-align:center;
+  font-size:12px;
+  padding:6px 0;
+  font-weight:600;
+}
+
+.monthly-day{
+  min-height:82px;
+  border-right:1px solid #eee;
+  border-bottom:1px solid #eee;
+  padding:4px;
+  overflow:hidden;
+}
+
+.monthly-date-number{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:3px;
+}
+
+.monthly-schedule{
+  font-size:10px;
+  padding:2px 3px;
+  margin-bottom:2px;
+  border-radius:4px;
+  background:#eef4ff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.monthly-more{
+  font-size:9px;
+  color:#777;
+}
+
+.monthly-day.other-month{
+  opacity:0.35;
+}
 </style>
 </head>
 
@@ -639,7 +690,7 @@ header{
     
 
     <div class="calendar" id="calendar"></div>
-
+<div id="monthlyCalendar" class="monthly-calendar" style="display:none;"></div>
     <button class="add-button" onclick="openNewForm()">
       ＋ 予定を追加
     </button>
@@ -991,6 +1042,147 @@ document.addEventListener("click", function(event){
     closeAllSuggestions();
   }
 });
+  let calendarView = "vertical";
+
+function toggleCalendarView() {
+    const verticalCalendar = document.getElementById("calendar");
+    const monthlyCalendar = document.getElementById("monthlyCalendar");
+
+    if (calendarView === "vertical") {
+        calendarView = "monthly";
+
+        verticalCalendar.style.display = "none";
+        monthlyCalendar.style.display = "block";
+
+        renderMonthlyCalendar();
+    } else {
+        calendarView = "vertical";
+
+        monthlyCalendar.style.display = "none";
+        verticalCalendar.style.display = "block";
+
+        renderCalendar();
+    }
+}
+  function renderMonthlyCalendar() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const monthlyCalendar =
+    document.getElementById("monthlyCalendar");
+
+  monthlyCalendar.innerHTML = "";
+
+  const weekNames = ["日","月","火","水","木","金","土"];
+
+  const header = document.createElement("div");
+  header.className = "monthly-week-header";
+
+  weekNames.forEach(name => {
+    const cell = document.createElement("div");
+    cell.textContent = name;
+    header.appendChild(cell);
+  });
+
+  monthlyCalendar.appendChild(header);
+
+  const grid = document.createElement("div");
+  grid.className = "monthly-grid";
+
+  const firstDay =
+    new Date(year, month, 1).getDay();
+
+  const lastDate =
+    new Date(year, month + 1, 0).getDate();
+
+  const prevLastDate =
+    new Date(year, month, 0).getDate();
+
+  const totalCells = 42;
+
+  for(let i = 0; i < totalCells; i++){
+
+    const cell = document.createElement("div");
+    cell.className = "monthly-day";
+
+    let displayDate;
+    let isOtherMonth = false;
+
+    if(i < firstDay){
+      displayDate =
+        new Date(
+          year,
+          month - 1,
+          prevLastDate - firstDay + i + 1
+        );
+      isOtherMonth = true;
+
+    } else if(i >= firstDay + lastDate){
+      displayDate =
+        new Date(
+          year,
+          month + 1,
+          i - firstDay - lastDate + 1
+        );
+      isOtherMonth = true;
+
+    } else {
+      displayDate =
+        new Date(
+          year,
+          month,
+          i - firstDay + 1
+        );
+    }
+
+    const dateString =
+      formatLocalDate(displayDate);
+
+    if(isOtherMonth){
+      cell.classList.add("other-month");
+    }
+
+    const dateNumber =
+      document.createElement("div");
+
+    dateNumber.className = "monthly-date-number";
+    dateNumber.textContent = displayDate.getDate();
+
+    cell.appendChild(dateNumber);
+
+    const daySchedules =
+      schedules.filter(schedule =>
+        dateString >= schedule.startDate &&
+        dateString <= schedule.endDate
+      );
+
+    daySchedules.slice(0, 2).forEach(schedule => {
+      const item = document.createElement("div");
+      item.className = "monthly-schedule";
+
+      item.textContent =
+        schedule.place || schedule.work || "予定";
+
+      item.onclick = () =>
+        openEditForm(schedule.id);
+
+      cell.appendChild(item);
+    });
+
+    if(daySchedules.length > 2){
+      const more = document.createElement("div");
+      more.className = "monthly-more";
+      more.textContent =
+        `+${daySchedules.length - 2}件`;
+
+      cell.appendChild(more);
+    }
+
+    grid.appendChild(cell);
+  }
+
+  monthlyCalendar.appendChild(grid);
+}
 function renderCalendar(){
 
   const year = currentDate.getFullYear();
