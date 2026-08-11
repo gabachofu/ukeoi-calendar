@@ -608,8 +608,8 @@ header{
   color:#6b7280;
   line-height:1.4;
 }
-  .monthly-calendar{
-  padding:8px;
+ .monthly-calendar{
+  padding:32px 8px 8px;
   background:#fff;
 }
 
@@ -921,7 +921,7 @@ async function loadSchedules() {
     color: job.color || "blue"
   }));
 updateInputSuggestions();
-  renderCalendar();
+ applyCalendarView();
 }
 let currentDate = new Date();
 
@@ -1042,27 +1042,48 @@ document.addEventListener("click", function(event){
     closeAllSuggestions();
   }
 });
-  let calendarView = "vertical";
+ let calendarView =
+  localStorage.getItem("calendarView") || "vertical";
 
 function toggleCalendarView() {
-    const verticalCalendar = document.getElementById("calendar");
-    const monthlyCalendar = document.getElementById("monthlyCalendar");
+ 
+  const verticalCalendar = document.getElementById("calendar");
+  const monthlyCalendar = document.getElementById("monthlyCalendar");
 
-    if (calendarView === "vertical") {
-        calendarView = "monthly";
+  if (calendarView === "vertical") {
+    calendarView = "monthly";
 
-        verticalCalendar.style.display = "none";
-        monthlyCalendar.style.display = "block";
+    verticalCalendar.style.display = "none";
+    monthlyCalendar.style.display = "block";
 
-        renderMonthlyCalendar();
-    } else {
-        calendarView = "vertical";
+    renderMonthlyCalendar();
 
-        monthlyCalendar.style.display = "none";
-        verticalCalendar.style.display = "block";
+  } else {
+    calendarView = "vertical";
 
-        renderCalendar();
-    }
+    monthlyCalendar.style.display = "none";
+    verticalCalendar.style.display = "block";
+
+    renderCalendar();
+  }
+
+  localStorage.setItem("calendarView", calendarView);
+}
+  function applyCalendarView() {
+  const verticalCalendar = document.getElementById("calendar");
+  const monthlyCalendar = document.getElementById("monthlyCalendar");
+
+  if (calendarView === "monthly") {
+    verticalCalendar.style.display = "none";
+    monthlyCalendar.style.display = "block";
+
+    renderMonthlyCalendar();
+  } else {
+    monthlyCalendar.style.display = "none";
+    verticalCalendar.style.display = "block";
+
+    renderCalendar();
+  }
 }
   function renderMonthlyCalendar() {
   const year = currentDate.getFullYear();
@@ -1743,8 +1764,7 @@ function escapeHtml(text){
 
 
 selectTimeType("AM");
-renderCalendar();
-
+applyCalendarView();
 </script>
 
 </body>
