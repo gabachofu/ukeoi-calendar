@@ -609,7 +609,7 @@ header{
   line-height:1.4;
 }
  .monthly-calendar{
-  padding:32px 8px 8px;
+  padding:18px 8px 8px;
   background:#fff;
 }
 
@@ -1088,7 +1088,8 @@ function toggleCalendarView() {
   function renderMonthlyCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
+document.getElementById("monthTitle").textContent =
+  `${year}年 ${month + 1}月`;
   const monthlyCalendar =
     document.getElementById("monthlyCalendar");
 
