@@ -584,6 +584,12 @@ header{
 .suggestion-item:active{
   background:#f3f4f6;
 }
+  .schedule-memo{
+  margin-top:3px;
+  font-size:11px;
+  color:#6b7280;
+  line-height:1.4;
+}
 </style>
 </head>
 
@@ -1092,15 +1098,22 @@ if(displayDate.getMonth() !== month){
 
 
       item.innerHTML =
-        `<div class="schedule-title">
-           ${escapeHtml(schedule.place || "予定")}
-           ${schedule.work
-             ? "　" + escapeHtml(schedule.work)
-             : ""}
-         </div>
-         <div class="schedule-time">
-           ${escapeHtml(timeText)}
-         </div>`;
+  `<div class="schedule-title">
+    ${escapeHtml(schedule.place || "予定")}
+    ${schedule.work
+      ? " " + escapeHtml(schedule.work)
+      : ""}
+   </div>
+
+   <div class="schedule-time">
+    ${escapeHtml(timeText)}
+   </div>
+
+   ${schedule.memo
+     ? `<div class="schedule-memo">
+          📝 ${escapeHtml(schedule.memo)}
+        </div>`
+     : ""}`;
 
 
       item.onclick = () =>
