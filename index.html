@@ -943,7 +943,29 @@ function setupSuggestions(inputId, suggestionsId, items){
     input.addEventListener("focus", showSuggestions);
     input.addEventListener("input", showSuggestions);
 }
+function closeAllSuggestions(){
+  document.querySelectorAll(".suggestions").forEach(box => {
+    box.style.display = "none";
+    box.innerHTML = "";
+  });
+}
 
+document.addEventListener("click", function(event){
+  const placeInput = document.getElementById("place");
+  const workInput = document.getElementById("work");
+  const placeBox = document.getElementById("placeSuggestions");
+  const workBox = document.getElementById("workSuggestions");
+
+  const clickedInside =
+    event.target === placeInput ||
+    event.target === workInput ||
+    placeBox.contains(event.target) ||
+    workBox.contains(event.target);
+
+  if(!clickedInside){
+    closeAllSuggestions();
+  }
+});
 function renderCalendar(){
 
   const year = currentDate.getFullYear();
@@ -1251,7 +1273,7 @@ function showForm(){
 
 
 function closeForm(){
-
+closeAllSuggestions();
   document.getElementById("formPage").style.display =
     "none";
 
