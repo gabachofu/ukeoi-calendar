@@ -1062,7 +1062,7 @@ function toggleCalendarView() {
 
     verticalCalendar.style.display = "none";
     monthlyCalendar.style.display = "block";
-
+document.body.style.overflow = "hidden";
     renderMonthlyCalendar();
 
   } else {
@@ -1070,7 +1070,7 @@ function toggleCalendarView() {
 
     monthlyCalendar.style.display = "none";
     verticalCalendar.style.display = "block";
-
+document.body.style.overflow = "";
     renderCalendar();
   }
 
@@ -1083,12 +1083,12 @@ function toggleCalendarView() {
   if (calendarView === "monthly") {
     verticalCalendar.style.display = "none";
     monthlyCalendar.style.display = "block";
-
+document.body.style.overflow = "hidden";
     renderMonthlyCalendar();
   } else {
     monthlyCalendar.style.display = "none";
     verticalCalendar.style.display = "block";
-
+document.body.style.overflow = "";
     renderCalendar();
   }
 }
