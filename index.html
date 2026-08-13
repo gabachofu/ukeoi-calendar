@@ -1062,6 +1062,10 @@ function showMonthlyView() {
 
    
     renderMonthlyCalendar();
+     // Safari側の表示位置を最後にもう一度揃える
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
   });
 }
 
