@@ -20,7 +20,7 @@ body{
 .app{
   max-width:700px;
   margin:auto;
-  min-height:100dvh;
+  min-height:100vh;
   background:#fff;
 }
 
@@ -505,20 +505,18 @@ body{
   font-size:12px;
 }
   /* ===== 上部固定ヘッダー ===== */
-
-header{
+.calendar-sticky-top{
   position:sticky;
   top:0;
   z-index:1000;
+}
+header{
   background:rgba(20,33,61,0.96);
   font-size:17px;
   padding:10px 14px;
 }
 
 .month-area{
-  position:sticky;
-top:52px;
-  z-index:999;
   background:rgba(255,255,255,0.96);
   border-bottom:1px solid #e5e7eb;
   padding:10px 12px 8px;
@@ -677,7 +675,7 @@ header{
 
   <!-- カレンダー画面 -->
   <div id="calendarPage">
-
+<div class="calendar-sticky-top">
     <header>
       請負仕事カレンダー
       <div class="view-toggle" onclick="toggleCalendarView()">▦</div>
@@ -689,6 +687,7 @@ header{
       <h2 id="monthTitle"></h2>
       <button class="month-arrow" onclick="changeMonth(1)">›</button>
     </div>
+   </div>
 
     
 
