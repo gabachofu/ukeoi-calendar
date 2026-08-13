@@ -619,10 +619,12 @@ header{
   grid-template-columns:repeat(7, 1fr);
 }
 .monthly-week-header{
-  position:relative;
-  z-index:1001;
+  position:sticky;
+  top:98px;
+  z-index:998;
   background:#fff;
-  margin-top:8px;
+  margin-top:0;
+  border-bottom:1px solid #e5e7eb;
 }
 .monthly-week-header div{
   text-align:center;
@@ -1209,13 +1211,6 @@ document.getElementById("monthTitle").textContent =
   }
 
   monthlyCalendar.appendChild(grid);
-    requestAnimationFrame(() => {
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "auto"
-  });
-});
 }
 function renderCalendar(){
 
