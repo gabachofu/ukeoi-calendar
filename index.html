@@ -1052,9 +1052,6 @@ function showMonthlyView() {
   const verticalCalendar = document.getElementById("calendar");
   const monthlyCalendar = document.getElementById("monthlyCalendar");
 
-  // いったんスクロールできる状態に戻す
-  document.body.style.overflow = "";
-
   // 縦型でどこまでスクロールしていても最上部へ戻す
   window.scrollTo(0, 0);
 
@@ -1063,9 +1060,7 @@ function showMonthlyView() {
     verticalCalendar.style.display = "none";
     monthlyCalendar.style.display = "block";
 
-    // 月間表示ではスクロールを止める
-    document.body.style.overflow = "hidden";
-
+   
     renderMonthlyCalendar();
   });
 }
@@ -1076,8 +1071,6 @@ function showVerticalView() {
 
   monthlyCalendar.style.display = "none";
   verticalCalendar.style.display = "block";
-
-  document.body.style.overflow = "";
 
   renderCalendar();
 }
