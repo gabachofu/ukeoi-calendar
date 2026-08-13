@@ -609,7 +609,7 @@ header{
   line-height:1.4;
 }
  .monthly-calendar{
-  padding:48px 8px 8px;
+  padding:8px;
   background:#fff;
 }
 
@@ -1209,6 +1209,13 @@ document.getElementById("monthTitle").textContent =
   }
 
   monthlyCalendar.appendChild(grid);
+    requestAnimationFrame(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "auto"
+  });
+});
 }
 function renderCalendar(){
 
@@ -1399,17 +1406,19 @@ if(displayDate.getMonth() !== month){
 
   document.getElementById("total").textContent =
     "¥" + total.toLocaleString();
-requestAnimationFrame(() => {
-  const monthStart =
-    document.getElementById("currentMonthStart");
+if (calendarView === "vertical") {
+  requestAnimationFrame(() => {
+    const monthStart =
+      document.getElementById("currentMonthStart");
 
-  if(monthStart){
-    monthStart.scrollIntoView({
-      behavior:"auto",
-      block:"start"
-    });
-  }
-});
+    if(monthStart){
+      monthStart.scrollIntoView({
+        behavior:"auto",
+        block:"start"
+      });
+    }
+  });
+}
 }
 
 
