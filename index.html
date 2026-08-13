@@ -619,11 +619,7 @@ header{
   grid-template-columns:repeat(7, 1fr);
 }
 .monthly-week-header{
-  position:sticky;
-  top:98px;
-  z-index:998;
   background:#fff;
-  margin-top:0;
   border-bottom:1px solid #e5e7eb;
 }
 .monthly-week-header div{
@@ -1052,46 +1048,50 @@ document.addEventListener("click", function(event){
  let calendarView =
   localStorage.getItem("calendarView") || "vertical";
 
-function toggleCalendarView() {
- 
+function showMonthlyView() {
   const verticalCalendar = document.getElementById("calendar");
   const monthlyCalendar = document.getElementById("monthlyCalendar");
 
+  verticalCalendar.style.display = "none";
+  monthlyCalendar.style.display = "block";
+
+  document.body.style.overflow = "hidden";
+
+  renderMonthlyCalendar();
+}
+
+function showVerticalView() {
+  const verticalCalendar = document.getElementById("calendar");
+  const monthlyCalendar = document.getElementById("monthlyCalendar");
+
+  monthlyCalendar.style.display = "none";
+  verticalCalendar.style.display = "block";
+
+  document.body.style.overflow = "";
+
+  renderCalendar();
+}
+
+function toggleCalendarView() {
   if (calendarView === "vertical") {
     calendarView = "monthly";
-
-    verticalCalendar.style.display = "none";
-    monthlyCalendar.style.display = "block";
-document.body.style.overflow = "hidden";
-    renderMonthlyCalendar();
-
+    showMonthlyView();
   } else {
     calendarView = "vertical";
-
-    monthlyCalendar.style.display = "none";
-    verticalCalendar.style.display = "block";
-document.body.style.overflow = "";
-    renderCalendar();
+    showVerticalView();
   }
 
   localStorage.setItem("calendarView", calendarView);
 }
-  function applyCalendarView() {
-  const verticalCalendar = document.getElementById("calendar");
-  const monthlyCalendar = document.getElementById("monthlyCalendar");
 
+function applyCalendarView() {
   if (calendarView === "monthly") {
-    verticalCalendar.style.display = "none";
-    monthlyCalendar.style.display = "block";
-document.body.style.overflow = "hidden";
-    renderMonthlyCalendar();
+    showMonthlyView();
   } else {
-    monthlyCalendar.style.display = "none";
-    verticalCalendar.style.display = "block";
-document.body.style.overflow = "";
-    renderCalendar();
+    showVerticalView();
   }
 }
+ 
   function renderMonthlyCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
