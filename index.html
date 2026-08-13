@@ -1052,12 +1052,22 @@ function showMonthlyView() {
   const verticalCalendar = document.getElementById("calendar");
   const monthlyCalendar = document.getElementById("monthlyCalendar");
 
-  verticalCalendar.style.display = "none";
-  monthlyCalendar.style.display = "block";
+  // いったんスクロールできる状態に戻す
+  document.body.style.overflow = "";
 
-  document.body.style.overflow = "hidden";
+  // 縦型でどこまでスクロールしていても最上部へ戻す
+  window.scrollTo(0, 0);
 
-  renderMonthlyCalendar();
+  // 最上部へ戻った後に月間表示へ切り替える
+  requestAnimationFrame(() => {
+    verticalCalendar.style.display = "none";
+    monthlyCalendar.style.display = "block";
+
+    // 月間表示ではスクロールを止める
+    document.body.style.overflow = "hidden";
+
+    renderMonthlyCalendar();
+  });
 }
 
 function showVerticalView() {
