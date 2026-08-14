@@ -1050,9 +1050,17 @@ function showMonthlyView() {
 
   verticalCalendar.style.display = "none";
   monthlyCalendar.style.display = "block";
-  renderMonthlyCalendar();
-}
 
+  renderMonthlyCalendar();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+  });
+}
 function showVerticalView() {
   const verticalCalendar = document.getElementById("calendar");
   const monthlyCalendar = document.getElementById("monthlyCalendar");
