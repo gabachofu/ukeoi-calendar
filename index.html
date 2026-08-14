@@ -657,6 +657,15 @@ header{
   font-weight:600;
   margin-bottom:3px;
 }
+  /* 日曜日の日付 */
+.monthly-day:nth-child(7n + 1) .monthly-date-number{
+    color:#d94a4a;
+}
+
+/* 土曜日の日付 */
+.monthly-day:nth-child(7n) .monthly-date-number{
+    color:#3f6fc4;
+}
 
 .monthly-schedule{
   font-size:10px;
