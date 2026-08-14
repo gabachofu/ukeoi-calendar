@@ -1796,6 +1796,41 @@ monthlyCalendarElement.addEventListener("touchmove", (e) => {
     monthlyCalendarElement.style.transform =
         `translateX(${moveX}px)`;
 });
+  monthlyCalendarElement.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const swipeDistance = touchCurrentX - touchStartX;
+
+    monthlyCalendarElement.style.transition = "transform 0.2s ease-out";
+
+    // スワイプが短い場合は元の位置へ戻す
+    if (Math.abs(swipeDistance) < 50) {
+        monthlyCalendarElement.style.transform = "translateX(0)";
+        return;
+    }
+
+    // 左へスワイプ → 次の月
+    if (swipeDistance < 0) {
+        monthlyCalendarElement.style.transform = "translateX(-100%)";
+
+        setTimeout(() => {
+            changeMonth(1);
+            monthlyCalendarElement.style.transition = "none";
+            monthlyCalendarElement.style.transform = "translateX(0)";
+        }, 200);
+
+    // 右へスワイプ → 前の月
+    } else {
+        monthlyCalendarElement.style.transform = "translateX(100%)";
+
+        setTimeout(() => {
+            changeMonth(-1);
+            monthlyCalendarElement.style.transition = "none";
+            monthlyCalendarElement.style.transform = "translateX(0)";
+        }, 200);
+    }
+});
 </script>
 
 </body>
