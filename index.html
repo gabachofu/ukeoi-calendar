@@ -1051,16 +1051,13 @@ function showMonthlyView() {
   const verticalCalendar = document.getElementById("calendar");
   const monthlyCalendar = document.getElementById("monthlyCalendar");
 
-  // 縦型でどこまでスクロールしていても最上部へ戻す
-  window.scrollTo(0, 0);
+  verticalCalendar.style.display = "none";
+  monthlyCalendar.style.display = "block";
 
-  // 最上部へ戻った後に月間表示へ切り替える
+  renderMonthlyCalendar();
+
   requestAnimationFrame(() => {
-    verticalCalendar.style.display = "none";
-    monthlyCalendar.style.display = "block";
-
-   
-    renderMonthlyCalendar();
+    window.scrollTo(0, 0);
   });
 }
 
