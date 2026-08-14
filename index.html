@@ -693,9 +693,6 @@ header{
 
     <div class="calendar" id="calendar"></div>
 <div id="monthlyCalendar" class="monthly-calendar" style="display:none;"></div>
-    <button class="add-button" onclick="openNewForm()">
-      ＋ 予定を追加
-    </button>
 
     <div class="summary">
       <div class="summary-row">
@@ -1417,7 +1414,11 @@ function changeMonth(amount){
       1
     );
 
+  if (calendarView === "monthly") {
+  renderMonthlyCalendar();
+} else {
   renderCalendar();
+}
 }
 
 
