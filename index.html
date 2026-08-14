@@ -1152,7 +1152,9 @@ monthlyCalendar.appendChild(header);
 
     const cell = document.createElement("div");
     cell.className = "monthly-day";
-
+if (dateString === todayString) {
+    cell.classList.add("today");
+}
     let displayDate;
     let isOtherMonth = false;
 
@@ -1278,9 +1280,6 @@ for(
       document.createElement("div");
 
     row.className = "day";
-  if (dateString === todayString) {
-    row.classList.add("today");
-}
 if(displayDate.getMonth() !== month){
   row.classList.add("other-month");
 }
