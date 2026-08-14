@@ -623,10 +623,25 @@ header{
     border-bottom:1px solid #d8dee8;
 }
 .monthly-week-header div{
-  text-align:center;
-  font-size:12px;
-  padding:6px 0;
-  font-weight:600;
+    text-align:center;
+    font-size:12px;
+    padding:6px 0;
+    font-weight:600;
+    border-right:1px solid #d4dae3;
+}
+
+/* 最後の「土」だけ右線なし */
+.monthly-week-header div:last-child{
+    border-right:none;
+}
+  /* 日曜日 */
+.monthly-week-header div:first-child{
+    color:#d94a4a;
+}
+
+/* 土曜日 */
+.monthly-week-header div:last-child{
+    color:#3f6fc4;
 }
 
 .monthly-day{
