@@ -617,9 +617,6 @@ header{
   grid-template-columns:repeat(7, 1fr);
 }
 .monthly-week-header{
-  position:sticky;
-top:114px;
-z-index:999;
   background:#fff;
   border-bottom:1px solid #e5e7eb;
 }
@@ -690,6 +687,15 @@ z-index:999;
       <h2 id="monthTitle"></h2>
       <button class="month-arrow" onclick="changeMonth(1)">›</button>
     </div>
+  <div id="monthlyWeekHeader" class="monthly-week-header" style="display:none;">
+  <div>日</div>
+  <div>月</div>
+  <div>火</div>
+  <div>水</div>
+  <div>木</div>
+  <div>金</div>
+  <div>土</div>
+</div>
    </div>
 
     
@@ -1056,7 +1062,7 @@ function showMonthlyView() {
 
   verticalCalendar.style.display = "none";
   monthlyCalendar.style.display = "block";
-
+document.getElementById("monthlyWeekHeader").style.display = "grid";
   renderMonthlyCalendar();
 }
 
@@ -1066,7 +1072,7 @@ function showVerticalView() {
 
   monthlyCalendar.style.display = "none";
   verticalCalendar.style.display = "block";
-
+document.getElementById("monthlyWeekHeader").style.display = "none";
   renderCalendar();
 }
 
@@ -1099,19 +1105,6 @@ document.getElementById("monthTitle").textContent =
     document.getElementById("monthlyCalendar");
 
   monthlyCalendar.innerHTML = "";
-
-  const weekNames = ["日","月","火","水","木","金","土"];
-
-  const header = document.createElement("div");
-  header.className = "monthly-week-header";
-
-  weekNames.forEach(name => {
-    const cell = document.createElement("div");
-    cell.textContent = name;
-    header.appendChild(cell);
-  });
-
-  monthlyCalendar.appendChild(header);
 
   const grid = document.createElement("div");
   grid.className = "monthly-grid";
