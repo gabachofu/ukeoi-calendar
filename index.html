@@ -1772,59 +1772,29 @@ function escapeHtml(text){
 
 selectTimeType("AM");
 renderCalendar();
-  let touchStartX = 0;
-let touchEndX = 0;
+let touchStartX = 0;
+let touchCurrentX = 0;
+let isDragging = false;
 
 const monthlyCalendarElement =
-  document.getElementById("monthlyCalendar");
+    document.getElementById("monthlyCalendar");
 
 monthlyCalendarElement.addEventListener("touchstart", (e) => {
-  touchStartX = e.changedTouches[0].screenX;
+    touchStartX = e.touches[0].clientX;
+    touchCurrentX = touchStartX;
+    isDragging = true;
+
+    monthlyCalendarElement.style.transition = "none";
 });
 
-monthlyCalendarElement.addEventListener("touchend", (e) => {
-  touchEndX = e.changedTouches[0].screenX;
+monthlyCalendarElement.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
 
-  const swipeDistance = touchEndX - touchStartX;
+    touchCurrentX = e.touches[0].clientX;
+    const moveX = touchCurrentX - touchStartX;
 
-  if (Math.abs(swipeDistance) < 50) {
-    return;
-  }
-
- if (swipeDistance < 0) {
-  monthlyCalendarElement.animate(
-    [
-      { transform: "translateX(0)", opacity: 1 },
-      { transform: "translateX(-35px)", opacity: 0.55 },
-      { transform: "translateX(0)", opacity: 1 }
-    ],
-    {
-      duration: 220,
-      easing: "ease-out"
-    }
-  );
-
-  setTimeout(() => {
-    changeMonth(1);
-  }, 110);
-
-} else {
-  monthlyCalendarElement.animate(
-    [
-      { transform: "translateX(0)", opacity: 1 },
-      { transform: "translateX(35px)", opacity: 0.55 },
-      { transform: "translateX(0)", opacity: 1 }
-    ],
-    {
-      duration: 220,
-      easing: "ease-out"
-    }
-  );
-
-  setTimeout(() => {
-    changeMonth(-1);
-  }, 110);
-}
+    monthlyCalendarElement.style.transform =
+        `translateX(${moveX}px)`;
 });
 </script>
 
