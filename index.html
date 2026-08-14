@@ -1791,11 +1791,40 @@ monthlyCalendarElement.addEventListener("touchend", (e) => {
     return;
   }
 
-  if (swipeDistance < 0) {
+ if (swipeDistance < 0) {
+  monthlyCalendarElement.animate(
+    [
+      { transform: "translateX(0)", opacity: 1 },
+      { transform: "translateX(-35px)", opacity: 0.55 },
+      { transform: "translateX(0)", opacity: 1 }
+    ],
+    {
+      duration: 220,
+      easing: "ease-out"
+    }
+  );
+
+  setTimeout(() => {
     changeMonth(1);
-  } else {
+  }, 110);
+
+} else {
+  monthlyCalendarElement.animate(
+    [
+      { transform: "translateX(0)", opacity: 1 },
+      { transform: "translateX(35px)", opacity: 0.55 },
+      { transform: "translateX(0)", opacity: 1 }
+    ],
+    {
+      duration: 220,
+      easing: "ease-out"
+    }
+  );
+
+  setTimeout(() => {
     changeMonth(-1);
-  }
+  }, 110);
+}
 });
 </script>
 
