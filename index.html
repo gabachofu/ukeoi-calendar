@@ -617,6 +617,9 @@ header{
   grid-template-columns:repeat(7, 1fr);
 }
 .monthly-week-header{
+  position:sticky;
+top:114px;
+z-index:999;
   background:#fff;
   border-bottom:1px solid #e5e7eb;
 }
@@ -1055,10 +1058,6 @@ function showMonthlyView() {
   monthlyCalendar.style.display = "block";
 
   renderMonthlyCalendar();
-
-  requestAnimationFrame(() => {
-    window.scrollTo(0, 0);
-  });
 }
 
 function showVerticalView() {
