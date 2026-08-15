@@ -182,7 +182,27 @@ header{
 .summary-value{
   font-weight:700;
 }
+.summary-horizontal{
+    display:flex;
+    align-items:center;
+    margin:0 15px 25px;
+}
 
+.summary-horizontal .summary-item{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 16px;
+    min-width:0;
+}
+
+.summary-horizontal .summary-divider{
+    width:1px;
+    height:28px;
+    background:#e8e8e8;
+    flex-shrink:0;
+}
 /* 入力画面 */
 
 .form-page{
@@ -732,17 +752,21 @@ header{
     <div class="calendar" id="calendar"></div>
 <div id="monthlyCalendar" class="monthly-calendar" style="display:none;"></div>
 
-    <div class="summary">
-      <div class="summary-row">
+   <div class="summary summary-horizontal">
+
+    <div class="summary-item">
         <span class="summary-label">今月の予定</span>
         <span class="summary-value" id="count">0件</span>
-      </div>
+    </div>
 
-      <div class="summary-row">
+    <div class="summary-divider"></div>
+
+    <div class="summary-item">
         <span class="summary-label">予定売上</span>
         <span class="summary-value" id="total">¥0</span>
-      </div>
     </div>
+
+</div>
 
   </div>
 
@@ -1466,10 +1490,11 @@ function changeMonth(amount){
       1
     );
 
-  if (calendarView === "monthly") {
-  renderMonthlyCalendar();
+ if (calendarView === "monthly") {
+    renderMonthlyCalendar();
+    renderCalendar();
 } else {
-  renderCalendar();
+    renderCalendar();
 }
 }
 
